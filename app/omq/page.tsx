@@ -83,10 +83,94 @@ export default function OMQPage() {
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    console.log('Form submitted:', formData);
-    // Ici vous pouvez ajouter la logique pour envoyer les données
+    
+    // Affichage des données dans la console
+    console.log('=== DONNÉES DU FORMULAIRE ===');
+    console.log('📋 Informations générales:');
+    console.log('  • Nom du restaurant:', formData.restaurantName);
+    console.log('  • Téléphone:', formData.phone);
+    console.log('  • Email:', formData.email);
+    console.log('  • Site web:', formData.website);
+    
+    console.log('🏠 Adresse:');
+    console.log('  • Rue:', formData.address.street);
+    console.log('  • Code postal:', formData.address.postalCode);
+    console.log('  • Ville:', formData.address.city);
+    
+    console.log('📱 Réseaux sociaux:');
+    console.log('  • Instagram:', formData.socialMedia.instagram);
+    console.log('  • TikTok:', formData.socialMedia.tiktok);
+    console.log('  • X (Twitter):', formData.socialMedia.twitter);
+    console.log('  • Facebook:', formData.socialMedia.facebook);
+    console.log('  • Snapchat:', formData.socialMedia.snapchat);
+    
+    console.log('🍽️ Informations pratiques:');
+    console.log('  • Catégorie:', formData.category);
+    
+    console.log('🕒 Horaires d\'ouverture:');
+    Object.entries(formData.openingHours).forEach(([day, hours]) => {
+      if (hours.closed) {
+        console.log(`  • ${day}: Fermé`);
+      } else {
+        console.log(`  • ${day}: ${hours.open || 'Non défini'} - ${hours.close || 'Non défini'}`);
+      }
+    });
+    
+    console.log('🚚 Options de service:');
+    console.log('  • Sur place:', formData.serviceOptions.onSite ? 'Oui' : 'Non');
+    console.log('  • Livraison:', formData.serviceOptions.delivery ? 'Oui' : 'Non');
+    console.log('  • Uber Eats:', formData.serviceOptions.uberEats ? 'Oui' : 'Non');
+    console.log('  • Deliveroo:', formData.serviceOptions.deliveroo ? 'Oui' : 'Non');
+    
+    console.log('🖼️ Identité visuelle:');
+    console.log('  • Logo:', formData.logo ? formData.logo.name : 'Aucun fichier');
+    console.log('  • Bannière:', formData.banner ? formData.banner.name : 'Aucun fichier');
+    console.log('  • Photos:', formData.photos.length > 0 ? `${formData.photos.length} fichier(s)` : 'Aucun fichier');
+    if (formData.photos.length > 0) {
+      formData.photos.forEach((photo, index) => {
+        console.log(`    - Photo ${index + 1}:`, photo.name);
+      });
+    }
+    
+    console.log('📢 Promotion:');
+    console.log('  • Prêt pour partenariat:', formData.partnershipReady ? 'Oui' : 'Non');
+    if (formData.partnershipReady) {
+      console.log('  • Type de promotion:', formData.partnershipType);
+    }
+    
+    console.log('⚖️ Mentions légales:');
+    console.log('  • Acceptation des conditions:', formData.acceptTerms ? 'Oui' : 'Non');
+    
+    console.log('=== DONNÉES COMPLÈTES (OBJET) ===');
+    console.log(formData);
+    
+    // Envoi de l'email
+    try {
+      console.log('📧 Envoi de l\'email en cours...');
+      
+      const response = await fetch('/api/send-email', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        console.log('✅ Email envoyé avec succès !', result);
+        alert('Formulaire soumis avec succès ! Un email a été envoyé avec toutes les informations. Consultez la console pour voir les détails.');
+      } else {
+        console.error('❌ Erreur lors de l\'envoi de l\'email:', result);
+        alert(`Erreur lors de l'envoi de l'email: ${result.error || 'Erreur inconnue'}`);
+      }
+    } catch (error) {
+      console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
+      alert('Erreur lors de l\'envoi de l\'email. Consultez la console pour plus de détails.');
+    }
   };
 
   const days = [

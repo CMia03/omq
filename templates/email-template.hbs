@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nouvelle inscription - OnMangeQuoi</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background-color: #fef3f2;
+            margin: 0;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header {
+            background: linear-gradient(135deg, #f97316, #dc2626);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+        .logo {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 20px;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            opacity: 0.9;
+            font-size: 16px;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 35px;
+            border-left: 4px solid #f97316;
+            padding-left: 20px;
+        }
+        .section h2 {
+            color: #f97316;
+            font-size: 20px;
+            margin: 0 0 15px 0;
+            display: flex;
+            align-items: center;
+        }
+        .section h2::before {
+            content: attr(data-icon);
+            margin-right: 10px;
+            font-size: 24px;
+        }
+        .info-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        .info-item {
+            display: flex;
+            flex-direction: column;
+        }
+        .info-label {
+            font-weight: 600;
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+        .info-value {
+            color: #1f2937;
+            font-size: 15px;
+            word-break: break-word;
+        }
+        .info-value:empty::before {
+            content: "Non renseigné";
+            color: #9ca3af;
+            font-style: italic;
+        }
+        .address-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr;
+            gap: 15px;
+        }
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+        .hours-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 10px;
+        }
+        .hours-table th,
+        .hours-table td {
+            padding: 8px 12px;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+        .hours-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+        .hours-table td {
+            color: #6b7280;
+        }
+        .hours-table .closed {
+            color: #dc2626;
+            font-weight: 600;
+        }
+        .service-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .service-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background-color: #fef3f2;
+            border-radius: 8px;
+            border: 1px solid #fed7d7;
+        }
+        .service-item.active {
+            background-color: #dcfce7;
+            border-color: #bbf7d0;
+        }
+        .service-check {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            border: 2px solid #f97316;
+            margin-right: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: bold;
+        }
+        .service-item.active .service-check {
+            background-color: #f97316;
+        }
+        .files-section {
+            background-color: #f9fafb;
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #e5e7eb;
+        }
+        .file-item {
+            display: flex;
+            align-items: center;
+            padding: 10px;
+            background: white;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            border: 1px solid #e5e7eb;
+        }
+        .file-item:last-child {
+            margin-bottom: 0;
+        }
+        .file-icon {
+            width: 24px;
+            height: 24px;
+            background-color: #f97316;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            margin-right: 12px;
+            font-size: 12px;
+        }
+        .promotion-section {
+            background: linear-gradient(135deg, #fef3f2, #fed7d7);
+            padding: 20px;
+            border-radius: 8px;
+            border: 1px solid #fecaca;
+        }
+        .promotion-ready {
+            display: inline-block;
+            padding: 8px 16px;
+            background-color: #dc2626;
+            color: white;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .footer {
+            background-color: #f9fafb;
+            padding: 30px;
+            text-align: center;
+            border-top: 1px solid #e5e7eb;
+        }
+        .footer p {
+            margin: 0;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        .legal-notice {
+            background-color: #fef3f2;
+            padding: 15px;
+            border-radius: 6px;
+            border-left: 4px solid #dc2626;
+            margin-top: 20px;
+        }
+        .legal-notice p {
+            margin: 0;
+            font-size: 13px;
+            color: #6b7280;
+        }
+        @media (max-width: 600px) {
+            .info-grid,
+            .address-grid {
+                grid-template-columns: 1fr;
+            }
+            .social-grid {
+                grid-template-columns: 1fr;
+            }
+            .service-options {
+                grid-template-columns: 1fr;
+            }
+            .content {
+                padding: 20px;
+            }
+            .header {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <div class="header">
+            <img src="https://via.placeholder.com/200x100/f97316/ffffff?text=OMQ+LOGO" alt="OMQ Logo" class="logo">
+            <h1>NOUVELLE INSCRIPTION</h1>
+            <p>Formulaire "Trojan Horse" - OnMangeQuoi</p>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <!-- Informations générales -->
+            <div class="section">
+                <h2 data-icon="📋">Informations générales</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Nom du restaurant &nbsp;</div>
+                        <div class="info-value">{{restaurantName}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Téléphone</div>
+                        <div class="info-value">{{phone}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Email</div>
+                        <div class="info-value">{{email}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Site web</div>
+                        <div class="info-value">{{website}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Adresse -->
+            <div class="section">
+                <h2 data-icon="🏠">Adresse</h2>
+                <div class="address-grid">
+                    <div class="info-item">
+                        <div class="info-label">Rue</div>
+                        <div class="info-value">{{address.street}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Code postal</div>
+                        <div class="info-value">{{address.postalCode}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="info-label">Ville</div>
+                        <div class="info-value">{{address.city}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Réseaux sociaux -->
+            <div class="section">
+                <h2 data-icon="📱">Réseaux sociaux</h2>
+                <div class="social-grid">
+                    {{#if socialMedia.instagram}}
+                    <div class="info-item">
+                        <div class="info-label">Instagram</div>
+                        <div class="info-value">{{socialMedia.instagram}}</div>
+                    </div>
+                    {{/if}}
+                    {{#if socialMedia.tiktok}}
+                    <div class="info-item">
+                        <div class="info-label">TikTok</div>
+                        <div class="info-value">{{socialMedia.tiktok}}</div>
+                    </div>
+                    {{/if}}
+                    {{#if socialMedia.twitter}}
+                    <div class="info-item">
+                        <div class="info-label">X (Twitter)</div>
+                        <div class="info-value">{{socialMedia.twitter}}</div>
+                    </div>
+                    {{/if}}
+                    {{#if socialMedia.facebook}}
+                    <div class="info-item">
+                        <div class="info-label">Facebook</div>
+                        <div class="info-value">{{socialMedia.facebook}}</div>
+                    </div>
+                    {{/if}}
+                    {{#if socialMedia.snapchat}}
+                    <div class="info-item">
+                        <div class="info-label">Snapchat</div>
+                        <div class="info-value">{{socialMedia.snapchat}}</div>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+
+            <!-- Informations pratiques -->
+            <div class="section">
+                <h2 data-icon="🍽️">Informations pratiques</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div class="info-label">Catégorie</div>
+                        <div class="info-value">{{category}}</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Horaires d'ouverture -->
+            <div class="section">
+                <h2 data-icon="🕒">Horaires d'ouverture</h2>
+                <table class="hours-table">
+                    <thead>
+                        <tr>
+                            <th>Jour</th>
+                            <th>Horaires</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {{#each openingHours}}
+                        <tr>
+                            <td>{{@key}}</td>
+                            <td>
+                                {{#if closed}}
+                                <span class="closed">Fermé</span>
+                                {{else}}
+                                {{open}} - {{close}}
+                                {{/if}}
+                            </td>
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Options de service -->
+            <div class="section">
+                <h2 data-icon="🚚">Options de service</h2>
+                <div class="service-options">
+                    <div class="service-item {{#if serviceOptions.onSite}}active{{/if}}">
+                        <div class="service-check">{{#if serviceOptions.onSite}}✓{{/if}}</div>
+                        <span>Sur place</span>
+                    </div>
+                    <div class="service-item {{#if serviceOptions.delivery}}active{{/if}}">
+                        <div class="service-check">{{#if serviceOptions.delivery}}✓{{/if}}</div>
+                        <span>Livraison</span>
+                    </div>
+                    <div class="service-item {{#if serviceOptions.uberEats}}active{{/if}}">
+                        <div class="service-check">{{#if serviceOptions.uberEats}}✓{{/if}}</div>
+                        <span>Uber Eats</span>
+                    </div>
+                    <div class="service-item {{#if serviceOptions.deliveroo}}active{{/if}}">
+                        <div class="service-check">{{#if serviceOptions.deliveroo}}✓{{/if}}</div>
+                        <span>Deliveroo</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Identité visuelle -->
+            <div class="section">
+                <h2 data-icon="🖼️">Identité visuelle</h2>
+                <div class="files-section">
+                    {{#if logo}}
+                    <div class="file-item">
+                        <div class="file-icon">📄</div>
+                        <span>Logo : {{logo.name}}</span>
+                    </div>
+                    {{/if}}
+                    {{#if banner}}
+                    <div class="file-item">
+                        <div class="file-icon">🖼️</div>
+                        <span>Bannière : {{banner.name}}</span>
+                    </div>
+                    {{/if}}
+                    {{#if photos}}
+                    {{#each photos}}
+                    <div class="file-item">
+                        <div class="file-icon">📷</div>
+                        <span>Photo {{@index}}: {{name}}</span>
+                    </div>
+                    {{/each}}
+                    {{/if}}
+                </div>
+            </div>
+
+            <!-- Promotion -->
+            {{#if partnershipReady}}
+            <div class="section">
+                <h2 data-icon="📢">Promotion</h2>
+                <div class="promotion-section">
+                    <div class="promotion-ready">Prêt pour partenariat</div>
+                    {{#if partnershipType}}
+                    <div class="info-item">
+                        <div class="info-label">Proposition de promotion</div>
+                        <div class="info-value">{{partnershipType}}</div>
+                    </div>
+                    {{/if}}
+                </div>
+            </div>
+            {{/if}}
+
+            <!-- Mentions légales -->
+            <div class="legal-notice">
+                <p><strong>RGPD :</strong> Les données sont conservées de façon sécurisée. L'utilisateur dispose d'un droit de rectification et de suppression de ses données personnelles.</p>
+                <p><strong>Acceptation des conditions :</strong> {{#if acceptTerms}}Oui{{else}}Non{{/if}}</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <div class="footer">
+            <p>Email généré automatiquement par le système OnMangeQuoi</p>
+            <p>{{date}}</p>
+        </div>
+    </div>
+</body>
+</html>

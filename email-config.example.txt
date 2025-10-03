@@ -1,0 +1,12 @@
+# Configuration Email pour OnMangeQuoi
+# Créez un fichier .env.local à la racine du projet avec ces variables :
+
+EMAIL_USER=votre.email@gmail.com
+EMAIL_PASSWORD=votre_mot_de_passe_application
+RECIPIENT_EMAIL=admin@onmangequoi.com
+
+# Instructions pour Gmail :
+# 1. Activez la double authentification sur votre compte Google
+# 2. Allez dans Paramètres Google > Sécurité > Mots de passe d'application
+# 3. Générez un nouveau mot de passe pour "Mail"
+# 4. Utilisez ce mot de passe (pas votre mot de passe normal)
