@@ -263,7 +263,7 @@ export default function OMQPage() {
             />
           </div>
           <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-gray-800 px-4">
-          FORMULAIRE “TROJAN HORSE”
+          FORMULAIRE D'INSCRIPTION
           </h1>
           <p className="text-center text-gray-600 mt-2 text-sm sm:text-base px-4">
             Rejoignez l'annuaire OnMangeQuoi et augmentez votre visibilité
