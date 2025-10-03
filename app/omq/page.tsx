@@ -3,7 +3,77 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-const initialFormData = {
+// Types pour les horaires d'ouverture
+interface OpeningHours {
+  open: string;
+  close: string;
+  closed: boolean;
+}
+
+// Types pour l'adresse
+interface Address {
+  street: string;
+  postalCode: string;
+  city: string;
+}
+
+// Types pour les réseaux sociaux
+interface SocialMedia {
+  instagram: string;
+  tiktok: string;
+  twitter: string;
+  facebook: string;
+  snapchat: string;
+}
+
+// Types pour les options de service
+interface ServiceOptions {
+  onSite: boolean;
+  delivery: boolean;
+  uberEats: boolean;
+  deliveroo: boolean;
+}
+
+// Types pour les horaires d'ouverture par jour
+interface OpeningHoursByDay {
+  monday: OpeningHours;
+  tuesday: OpeningHours;
+  wednesday: OpeningHours;
+  thursday: OpeningHours;
+  friday: OpeningHours;
+  saturday: OpeningHours;
+  sunday: OpeningHours;
+}
+
+// Type principal pour les données du formulaire
+interface FormData {
+  restaurantName: string;
+  address: Address;
+  phone: string;
+  email: string;
+  website: string;
+  socialMedia: SocialMedia;
+  category: string;
+  openingHours: OpeningHoursByDay;
+  serviceOptions: ServiceOptions;
+  logo: File | null;
+  banner: File | null;
+  photos: File[];
+  partnershipReady: boolean;
+  partnershipType: string;
+  acceptTerms: boolean;
+}
+
+// Type pour les données traitées avant envoi
+interface ProcessedFormData extends Omit<FormData, 'logo' | 'banner' | 'photos'> {
+  logoBase64?: string;
+  logoName?: string;
+  bannerBase64?: string;
+  bannerName?: string;
+  photosBase64?: Array<{ name: string; base64: string }>;
+}
+
+const initialFormData: FormData = {
   // Informations générales
   restaurantName: '',
   address: {
@@ -54,24 +124,34 @@ export default function OMQPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formKey, setFormKey] = useState(0);
 
-  const handleInputChange = (field: string, value: any) => {
+  const handleInputChange = <K extends keyof FormData>(
+    field: K,
+    value: FormData[K]
+  ) => {
     setFormData(prev => ({
       ...prev,
       [field]: value
     }));
   };
 
-  const handleNestedInputChange = (parent: string, field: string, value: any) => {
+  const handleNestedInputChange = (
+    parent: keyof Pick<FormData, 'address' | 'socialMedia' | 'openingHours' | 'serviceOptions'>,
+    field: string,
+    value: string | boolean | OpeningHours | ServiceOptions
+  ) => {
     setFormData(prev => ({
       ...prev,
       [parent]: {
-        ...(prev[parent as keyof typeof prev] as any),
+        ...(prev[parent] as unknown as Record<string, unknown>),
         [field]: value
       }
     }));
   };
 
-  const handleFileUpload = (field: string, files: FileList | null) => {
+  const handleFileUpload = (
+    field: 'logo' | 'banner' | 'photos',
+    files: FileList | null
+  ) => {
     if (files) {
       if (field === 'photos') {
         setFormData(prev => ({
@@ -107,7 +187,7 @@ export default function OMQPage() {
     setIsSubmitting(true);
     
     // Convertir les fichiers en base64
-    const processedData: any = { ...formData };
+    const processedData: ProcessedFormData = { ...formData };
     
     try {
       if (formData.logo) {
@@ -128,11 +208,6 @@ export default function OMQPage() {
           }))
         );
       }
-      
-      // Retirer les objets File originaux
-      processedData.logo = undefined;
-      processedData.banner = undefined;
-      processedData.photos = undefined;
       
       console.log('📧 Envoi de l\'email en cours...');
       
@@ -394,11 +469,12 @@ export default function OMQPage() {
                         checked={formData.openingHours[day.key as keyof typeof formData.openingHours].closed}
                         onChange={(e) => {
                           const newHours = { ...formData.openingHours };
-                          newHours[day.key as keyof typeof newHours] = {
-                            ...newHours[day.key as keyof typeof newHours],
+                          const dayKey = day.key as keyof OpeningHoursByDay;
+                          newHours[dayKey] = {
+                            ...newHours[dayKey],
                             closed: e.target.checked,
-                            open: e.target.checked ? '' : newHours[day.key as keyof typeof newHours].open,
-                            close: e.target.checked ? '' : newHours[day.key as keyof typeof newHours].close
+                            open: e.target.checked ? '' : newHours[dayKey].open,
+                            close: e.target.checked ? '' : newHours[dayKey].close
                           };
                           setFormData(prev => ({ ...prev, openingHours: newHours }));
                         }}
@@ -413,8 +489,9 @@ export default function OMQPage() {
                           value={formData.openingHours[day.key as keyof typeof formData.openingHours].open}
                           onChange={(e) => {
                             const newHours = { ...formData.openingHours };
-                            newHours[day.key as keyof typeof newHours] = {
-                              ...newHours[day.key as keyof typeof newHours],
+                            const dayKey = day.key as keyof OpeningHoursByDay;
+                            newHours[dayKey] = {
+                              ...newHours[dayKey],
                               open: e.target.value
                             };
                             setFormData(prev => ({ ...prev, openingHours: newHours }));
@@ -427,8 +504,9 @@ export default function OMQPage() {
                           value={formData.openingHours[day.key as keyof typeof formData.openingHours].close}
                           onChange={(e) => {
                             const newHours = { ...formData.openingHours };
-                            newHours[day.key as keyof typeof newHours] = {
-                              ...newHours[day.key as keyof typeof newHours],
+                            const dayKey = day.key as keyof OpeningHoursByDay;
+                            newHours[dayKey] = {
+                              ...newHours[dayKey],
                               close: e.target.value
                             };
                             setFormData(prev => ({ ...prev, openingHours: newHours }));
@@ -458,7 +536,8 @@ export default function OMQPage() {
                       checked={formData.serviceOptions[option.key as keyof typeof formData.serviceOptions]}
                       onChange={(e) => {
                         const newOptions = { ...formData.serviceOptions };
-                        newOptions[option.key as keyof typeof newOptions] = e.target.checked;
+                        const optionKey = option.key as keyof ServiceOptions;
+                        newOptions[optionKey] = e.target.checked;
                         setFormData(prev => ({ ...prev, serviceOptions: newOptions }));
                       }}
                       className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
