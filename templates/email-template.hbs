@@ -71,13 +71,21 @@
         }
         .info-item {
             display: flex;
-            flex-direction: column;
+            flex-direction: row;
+            align-items: baseline;
+            gap: 6px;
+            flex-wrap: wrap;
         }
         .info-label {
             font-weight: 600;
             color: #6b7280;
             font-size: 14px;
             margin-bottom: 5px;
+            margin-right: 10px;
+
+        }
+        .info-label::after {
+            content: ": ";
         }
         .info-value {
             color: #1f2937;
@@ -260,19 +268,19 @@
                 <h2 data-icon="📋">Informations générales</h2>
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-label">Nom du restaurant &nbsp;</div>
+                        <div class="info-label">Nom du restaurant:</div>
                         <div class="info-value">{{restaurantName}}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Téléphone</div>
+                        <div class="info-label">Téléphone:</div>
                         <div class="info-value">{{phone}}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Email</div>
+                        <div class="info-label">Email:</div>
                         <div class="info-value">{{email}}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Site web</div>
+                        <div class="info-label">Site web:</div>
                         <div class="info-value">{{website}}</div>
                     </div>
                 </div>
@@ -283,15 +291,15 @@
                 <h2 data-icon="🏠">Adresse</h2>
                 <div class="address-grid">
                     <div class="info-item">
-                        <div class="info-label">Rue</div>
+                        <div class="info-label">Rue:</div>
                         <div class="info-value">{{address.street}}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Code postal</div>
+                        <div class="info-label">Code postal:</div>
                         <div class="info-value">{{address.postalCode}}</div>
                     </div>
                     <div class="info-item">
-                        <div class="info-label">Ville</div>
+                        <div class="info-label">Ville:</div>
                         <div class="info-value">{{address.city}}</div>
                     </div>
                 </div>
@@ -303,31 +311,31 @@
                 <div class="social-grid">
                     {{#if socialMedia.instagram}}
                     <div class="info-item">
-                        <div class="info-label">Instagram</div>
+                        <div class="info-label">Instagram:</div>
                         <div class="info-value">{{socialMedia.instagram}}</div>
                     </div>
                     {{/if}}
                     {{#if socialMedia.tiktok}}
                     <div class="info-item">
-                        <div class="info-label">TikTok</div>
+                        <div class="info-label">TikTok:</div>
                         <div class="info-value">{{socialMedia.tiktok}}</div>
                     </div>
                     {{/if}}
                     {{#if socialMedia.twitter}}
                     <div class="info-item">
-                        <div class="info-label">X (Twitter)</div>
+                        <div class="info-label">X (Twitter):</div>
                         <div class="info-value">{{socialMedia.twitter}}</div>
                     </div>
                     {{/if}}
                     {{#if socialMedia.facebook}}
                     <div class="info-item">
-                        <div class="info-label">Facebook</div>
+                        <div class="info-label">Facebook:</div>
                         <div class="info-value">{{socialMedia.facebook}}</div>
                     </div>
                     {{/if}}
                     {{#if socialMedia.snapchat}}
                     <div class="info-item">
-                        <div class="info-label">Snapchat</div>
+                        <div class="info-label">Snapchat:</div>
                         <div class="info-value">{{socialMedia.snapchat}}</div>
                     </div>
                     {{/if}}
@@ -339,7 +347,7 @@
                 <h2 data-icon="🍽️">Informations pratiques</h2>
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-label">Catégorie</div>
+                        <div class="info-label">Catégorie:</div>
                         <div class="info-value">{{category}}</div>
                     </div>
                 </div>
@@ -399,25 +407,42 @@
             <div class="section">
                 <h2 data-icon="🖼️">Identité visuelle</h2>
                 <div class="files-section">
-                    {{#if logo}}
+                    {{#if logoName}}
                     <div class="file-item">
                         <div class="file-icon">📄</div>
-                        <span>Logo : {{logo.name}}</span>
+                        <span>Logo : {{logoName}}</span>
+                    </div>
+                    {{#if logoBase64}}
+                    <div style="margin-top: 10px; text-align: center;">
+                        <img src="cid:logo@omq" alt="Logo du restaurant" style="max-width: 200px; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                     </div>
                     {{/if}}
-                    {{#if banner}}
+                    {{/if}}
+                    {{#if bannerName}}
                     <div class="file-item">
                         <div class="file-icon">🖼️</div>
-                        <span>Bannière : {{banner.name}}</span>
+                        <span>Bannière : {{bannerName}}</span>
+                    </div>
+                    {{#if bannerBase64}}
+                    <div style="margin-top: 10px; text-align: center;">
+                        <img src="cid:banner@omq" alt="Bannière du restaurant" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                     </div>
                     {{/if}}
-                    {{#if photos}}
-                    {{#each photos}}
+                    {{/if}}
+                    {{#if photosBase64}}
+                    {{#each photosBase64}}
                     <div class="file-item">
                         <div class="file-icon">📷</div>
                         <span>Photo {{@index}}: {{name}}</span>
                     </div>
                     {{/each}}
+                    <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
+                        {{#each photosBase64}}
+                        <div style="text-align: center;">
+                            <img src="cid:photo-{{@index}}@omq" alt="Photo {{@index}}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        </div>
+                        {{/each}}
+                    </div>
                     {{/if}}
                 </div>
             </div>

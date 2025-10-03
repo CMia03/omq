@@ -88,6 +88,38 @@ export async function POST(request: NextRequest) {
     console.log('🚀 Creating transporter...');
     const transporter = createTransporter();
 
+    // Préparer les pièces jointes pour les images
+    const attachments: any[] = [];
+    
+    // Ajouter le logo si présent
+    if (formData.logoBase64) {
+      attachments.push({
+        filename: formData.logoName || 'logo.png',
+        content: Buffer.from(formData.logoBase64, 'base64'),
+        cid: 'logo@omq' // Content-ID pour référence dans le HTML
+      });
+    }
+    
+    // Ajouter la bannière si présente
+    if (formData.bannerBase64) {
+      attachments.push({
+        filename: formData.bannerName || 'banner.jpg',
+        content: Buffer.from(formData.bannerBase64, 'base64'),
+        cid: 'banner@omq'
+      });
+    }
+    
+    // Ajouter les photos si présentes
+    if (formData.photosBase64 && formData.photosBase64.length > 0) {
+      formData.photosBase64.forEach((photo: any, index: number) => {
+        attachments.push({
+          filename: photo.name || `photo-${index + 1}.jpg`,
+          content: Buffer.from(photo.base64, 'base64'),
+          cid: `photo-${index}@omq`
+        });
+      });
+    }
+
     // Configuration de l'email
     const mailOptions = {
       from: {
@@ -97,6 +129,7 @@ export async function POST(request: NextRequest) {
       to: process.env.RECIPIENT_EMAIL || formData.email, // Email de destination
       subject: `Nouvelle inscription - ${formData.restaurantName}`,
       html: htmlContent,
+      attachments: attachments, // Ajouter les pièces jointes
       // Version texte alternative
       text: `
 Nouvelle inscription OnMangeQuoi

@@ -83,71 +83,55 @@ export default function OMQPage() {
     }
   };
 
+  // Fonction pour convertir un fichier en base64
+  const fileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => {
+        const result = reader.result as string;
+        // Retirer le préfixe "data:image/...;base64,"
+        const base64 = result.split(',')[1];
+        resolve(base64);
+      };
+      reader.onerror = error => reject(error);
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
-    // Affichage des données dans la console
-    console.log('=== DONNÉES DU FORMULAIRE ===');
-    console.log('📋 Informations générales:');
-    console.log('  • Nom du restaurant:', formData.restaurantName);
-    console.log('  • Téléphone:', formData.phone);
-    console.log('  • Email:', formData.email);
-    console.log('  • Site web:', formData.website);
+    // Convertir les fichiers en base64
+    const processedData: any = { ...formData };
     
-    console.log('🏠 Adresse:');
-    console.log('  • Rue:', formData.address.street);
-    console.log('  • Code postal:', formData.address.postalCode);
-    console.log('  • Ville:', formData.address.city);
-    
-    console.log('📱 Réseaux sociaux:');
-    console.log('  • Instagram:', formData.socialMedia.instagram);
-    console.log('  • TikTok:', formData.socialMedia.tiktok);
-    console.log('  • X (Twitter):', formData.socialMedia.twitter);
-    console.log('  • Facebook:', formData.socialMedia.facebook);
-    console.log('  • Snapchat:', formData.socialMedia.snapchat);
-    
-    console.log('🍽️ Informations pratiques:');
-    console.log('  • Catégorie:', formData.category);
-    
-    console.log('🕒 Horaires d\'ouverture:');
-    Object.entries(formData.openingHours).forEach(([day, hours]) => {
-      if (hours.closed) {
-        console.log(`  • ${day}: Fermé`);
-      } else {
-        console.log(`  • ${day}: ${hours.open || 'Non défini'} - ${hours.close || 'Non défini'}`);
-      }
-    });
-    
-    console.log('🚚 Options de service:');
-    console.log('  • Sur place:', formData.serviceOptions.onSite ? 'Oui' : 'Non');
-    console.log('  • Livraison:', formData.serviceOptions.delivery ? 'Oui' : 'Non');
-    console.log('  • Uber Eats:', formData.serviceOptions.uberEats ? 'Oui' : 'Non');
-    console.log('  • Deliveroo:', formData.serviceOptions.deliveroo ? 'Oui' : 'Non');
-    
-    console.log('🖼️ Identité visuelle:');
-    console.log('  • Logo:', formData.logo ? formData.logo.name : 'Aucun fichier');
-    console.log('  • Bannière:', formData.banner ? formData.banner.name : 'Aucun fichier');
-    console.log('  • Photos:', formData.photos.length > 0 ? `${formData.photos.length} fichier(s)` : 'Aucun fichier');
-    if (formData.photos.length > 0) {
-      formData.photos.forEach((photo, index) => {
-        console.log(`    - Photo ${index + 1}:`, photo.name);
-      });
-    }
-    
-    console.log('📢 Promotion:');
-    console.log('  • Prêt pour partenariat:', formData.partnershipReady ? 'Oui' : 'Non');
-    if (formData.partnershipReady) {
-      console.log('  • Type de promotion:', formData.partnershipType);
-    }
-    
-    console.log('⚖️ Mentions légales:');
-    console.log('  • Acceptation des conditions:', formData.acceptTerms ? 'Oui' : 'Non');
-    
-    console.log('=== DONNÉES COMPLÈTES (OBJET) ===');
-    console.log(formData);
-    
-    // Envoi de l'email
     try {
+      // Convertir le logo
+      if (formData.logo) {
+        processedData.logoBase64 = await fileToBase64(formData.logo);
+        processedData.logoName = formData.logo.name;
+      }
+      
+      // Convertir la bannière
+      if (formData.banner) {
+        processedData.bannerBase64 = await fileToBase64(formData.banner);
+        processedData.bannerName = formData.banner.name;
+      }
+      
+      // Convertir les photos
+      if (formData.photos.length > 0) {
+        processedData.photosBase64 = await Promise.all(
+          formData.photos.map(async (photo) => ({
+            name: photo.name,
+            base64: await fileToBase64(photo)
+          }))
+        );
+      }
+      
+      // Retirer les objets File originaux
+      processedData.logo = undefined;
+      processedData.banner = undefined;
+      processedData.photos = undefined;
+      
       console.log('📧 Envoi de l\'email en cours...');
       
       const response = await fetch('/api/send-email', {
@@ -155,7 +139,7 @@ export default function OMQPage() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(processedData),
       });
 
       const result = await response.json();
