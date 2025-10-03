@@ -3,52 +3,56 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
+const initialFormData = {
+  // Informations générales
+  restaurantName: '',
+  address: {
+    street: '',
+    postalCode: '',
+    city: ''
+  },
+  phone: '',
+  email: '',
+  website: '',
+  socialMedia: {
+    instagram: '',
+    tiktok: '',
+    twitter: '',
+    facebook: '',
+    snapchat: ''
+  },
+  // Informations pratiques
+  category: '',
+  openingHours: {
+    monday: { open: '', close: '', closed: false },
+    tuesday: { open: '', close: '', closed: false },
+    wednesday: { open: '', close: '', closed: false },
+    thursday: { open: '', close: '', closed: false },
+    friday: { open: '', close: '', closed: false },
+    saturday: { open: '', close: '', closed: false },
+    sunday: { open: '', close: '', closed: false }
+  },
+  serviceOptions: {
+    onSite: false,
+    delivery: false,
+    uberEats: false,
+    deliveroo: false
+  },
+  // Identité visuelle
+  logo: null as File | null,
+  banner: null as File | null,
+  photos: [] as File[],
+  // Promotion
+  partnershipReady: false,
+  partnershipType: '',
+  // Mentions légales
+  acceptTerms: false
+};
+
 export default function OMQPage() {
-  const [formData, setFormData] = useState({
-    // Informations générales
-    restaurantName: '',
-    address: {
-      street: '',
-      postalCode: '',
-      city: ''
-    },
-    phone: '',
-    email: '',
-    website: '',
-    socialMedia: {
-      instagram: '',
-      tiktok: '',
-      twitter: '',
-      facebook: '',
-      snapchat: ''
-    },
-    // Informations pratiques
-    category: '',
-    openingHours: {
-      monday: { open: '', close: '', closed: false },
-      tuesday: { open: '', close: '', closed: false },
-      wednesday: { open: '', close: '', closed: false },
-      thursday: { open: '', close: '', closed: false },
-      friday: { open: '', close: '', closed: false },
-      saturday: { open: '', close: '', closed: false },
-      sunday: { open: '', close: '', closed: false }
-    },
-    serviceOptions: {
-      onSite: false,
-      delivery: false,
-      uberEats: false,
-      deliveroo: false
-    },
-    // Identité visuelle
-    logo: null as File | null,
-    banner: null as File | null,
-    photos: [] as File[],
-    // Promotion
-    partnershipReady: false,
-    partnershipType: '',
-    // Mentions légales
-    acceptTerms: false
-  });
+  const [formData, setFormData] = useState(initialFormData);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [formKey, setFormKey] = useState(0);
 
   const handleInputChange = (field: string, value: any) => {
     setFormData(prev => ({
@@ -100,24 +104,22 @@ export default function OMQPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setIsSubmitting(true);
     
     // Convertir les fichiers en base64
     const processedData: any = { ...formData };
     
     try {
-      // Convertir le logo
       if (formData.logo) {
         processedData.logoBase64 = await fileToBase64(formData.logo);
         processedData.logoName = formData.logo.name;
       }
       
-      // Convertir la bannière
       if (formData.banner) {
         processedData.bannerBase64 = await fileToBase64(formData.banner);
         processedData.bannerName = formData.banner.name;
       }
       
-      // Convertir les photos
       if (formData.photos.length > 0) {
         processedData.photosBase64 = await Promise.all(
           formData.photos.map(async (photo) => ({
@@ -147,6 +149,8 @@ export default function OMQPage() {
       if (response.ok) {
         console.log('✅ Email envoyé avec succès !', result);
         alert('Formulaire soumis avec succès ! Un email a été envoyé avec toutes les informations. Consultez la console pour voir les détails.');
+        setFormData(initialFormData);
+        setFormKey((k) => k + 1);
       } else {
         console.error('❌ Erreur lors de l\'envoi de l\'email:', result);
         alert(`Erreur lors de l'envoi de l'email: ${result.error || 'Erreur inconnue'}`);
@@ -154,6 +158,8 @@ export default function OMQPage() {
     } catch (error) {
       console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
       alert('Erreur lors de l\'envoi de l\'email. Consultez la console pour plus de détails.');
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -191,7 +197,7 @@ export default function OMQPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <form onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+        <form key={formKey} onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
           {/* Informations générales */}
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
             <h2 className="text-xl sm:text-2xl font-semibold text-orange-600 mb-4 sm:mb-6 border-b-2 border-orange-200 pb-2 flex justify-between items-center">
@@ -581,7 +587,8 @@ export default function OMQPage() {
           <div className="flex justify-center px-4">
             <button
               type="submit"
-              className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 sm:px-8 rounded-lg shadow-lg hover:from-orange-600 hover:to-red-600 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-orange-300 text-sm sm:text-base"
+              disabled={isSubmitting}
+              className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 sm:px-8 rounded-lg shadow-lg hover:from-orange-600 hover:to-red-600 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-orange-300 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Soumettre le formulaire
             </button>
