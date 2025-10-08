@@ -260,12 +260,12 @@ export default function OMQPage() {
           font-family: var(--font-nunito), sans-serif;
         }
       `}</style>
-      <div className="bg-white shadow-lg">
+      <div className="bg-orange-500 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex items-center justify-between">
             <div className="flex-shrink-0">
               <Image
-                src="/OMQ-logoColor.png"
+                src="/omq-white.png"
                 alt="OMQ Logo"
                 width={120}
                 height={60}
@@ -275,10 +275,10 @@ export default function OMQPage() {
             
             {/* Texte au centre */}
             <div className="flex-1 text-center px-4">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-gray-800" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
                 FORMULAIRE D'INSCRIPTION
               </h1>
-              <p className="text-gray-600 mt-1 text-sm sm:text-base" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
+              <p className="text-orange-100 mt-1 text-sm sm:text-base" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
                 Rejoignez l'annuaire OnMangeQuoi et augmentez votre visibilité
               </p>
             </div>
