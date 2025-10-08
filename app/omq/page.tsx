@@ -3,21 +3,18 @@
 import { useState } from 'react';
 import Image from 'next/image';
 
-// Types pour les horaires d'ouverture
 interface OpeningHours {
   open: string;
   close: string;
   closed: boolean;
 }
 
-// Types pour l'adresse
 interface Address {
   street: string;
   postalCode: string;
   city: string;
 }
 
-// Types pour les réseaux sociaux
 interface SocialMedia {
   instagram: string;
   tiktok: string;
@@ -26,7 +23,6 @@ interface SocialMedia {
   snapchat: string;
 }
 
-// Types pour les options de service
 interface ServiceOptions {
   onSite: boolean;
   delivery: boolean;
@@ -34,7 +30,6 @@ interface ServiceOptions {
   deliveroo: boolean;
 }
 
-// Types pour les horaires d'ouverture par jour
 interface OpeningHoursByDay {
   monday: OpeningHours;
   tuesday: OpeningHours;
@@ -45,7 +40,6 @@ interface OpeningHoursByDay {
   sunday: OpeningHours;
 }
 
-// Type principal pour les données du formulaire
 interface FormData {
   restaurantName: string;
   address: Address;
@@ -64,7 +58,6 @@ interface FormData {
   acceptTerms: boolean;
 }
 
-// Type pour les données traitées avant envoi
 interface ProcessedFormData extends Omit<FormData, 'logo' | 'banner' | 'photos'> {
   logoBase64?: string;
   logoName?: string;
@@ -74,7 +67,6 @@ interface ProcessedFormData extends Omit<FormData, 'logo' | 'banner' | 'photos'>
 }
 
 const initialFormData: FormData = {
-  // Informations générales
   restaurantName: '',
   address: {
     street: '',
@@ -91,7 +83,6 @@ const initialFormData: FormData = {
     facebook: '',
     snapchat: ''
   },
-  // Informations pratiques
   category: '',
   openingHours: {
     monday: { open: '', close: '', closed: false },
@@ -108,14 +99,11 @@ const initialFormData: FormData = {
     uberEats: false,
     deliveroo: false
   },
-  // Identité visuelle
   logo: null as File | null,
   banner: null as File | null,
   photos: [] as File[],
-  // Promotion
   partnershipReady: false,
   partnershipType: '',
-  // Mentions légales
   acceptTerms: false
 };
 
@@ -123,6 +111,9 @@ export default function OMQPage() {
   const [formData, setFormData] = useState(initialFormData);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [formKey, setFormKey] = useState(0);
+  const [showModal, setShowModal] = useState(false);
+  const [modalMessage, setModalMessage] = useState('');
+  const [isSuccess, setIsSuccess] = useState(false);
 
   const handleInputChange = <K extends keyof FormData>(
     field: K,
@@ -167,14 +158,12 @@ export default function OMQPage() {
     }
   };
 
-  // Fonction pour convertir un fichier en base64
   const fileToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
       reader.readAsDataURL(file);
       reader.onload = () => {
         const result = reader.result as string;
-        // Retirer le préfixe "data:image/...;base64,"
         const base64 = result.split(',')[1];
         resolve(base64);
       };
@@ -186,7 +175,6 @@ export default function OMQPage() {
     e.preventDefault();
     setIsSubmitting(true);
     
-    // Convertir les fichiers en base64
     const processedData: ProcessedFormData = { ...formData };
     
     try {
@@ -223,16 +211,21 @@ export default function OMQPage() {
 
       if (response.ok) {
         console.log('✅ Email envoyé avec succès !', result);
-        alert('Formulaire soumis avec succès ! Un email a été envoyé avec toutes les informations. Consultez la console pour voir les détails.');
+        setModalMessage('Formulaire soumis avec succès ! Un email a été envoyé avec toutes les informations.');
+        setIsSuccess(true);
+        setShowModal(true);
         setFormData(initialFormData);
         setFormKey((k) => k + 1);
       } else {
         console.error('❌ Erreur lors de l\'envoi de l\'email:', result);
-        alert(`Erreur lors de l'envoi de l'email: ${result.error || 'Erreur inconnue'}`);
+        setModalMessage(`Erreur lors de l'envoi de l'email: ${result.error || 'Erreur inconnue'}`);
+        setIsSuccess(false);
+        setShowModal(true);
       }
     } catch (error) {
-      console.error('❌ Erreur lors de l\'envoi de l\'email:', error);
-      alert('Erreur lors de l\'envoi de l\'email. Consultez la console pour plus de détails.');
+      setModalMessage('Erreur lors de l\'envoi de l\'email. Veuillez réessayer.');
+      setIsSuccess(false);
+      setShowModal(true);
     } finally {
       setIsSubmitting(false);
     }
@@ -249,25 +242,32 @@ export default function OMQPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-orange-50 to-red-50">
-      {/* Header avec logo */}
-      <div className="bg-white shadow-lg">
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/OMQ-Pattern.png)' }}>
+      <div className="bg-orange-500 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-          <div className="flex items-center justify-center mb-4">
-            <Image
-              src="/OMQ-logoColor.png"
-              alt="OMQ Logo"
-              width={120}
-              height={60}
-              className="object-contain w-24 h-12 sm:w-32 sm:h-16"
-            />
+          <div className="flex items-center justify-between">
+            <div className="flex-shrink-0">
+              <Image
+                src="/omq-white.png"
+                alt="OMQ Logo"
+                width={120}
+                height={60}
+                className="object-contain w-24 h-12 sm:w-32 sm:h-16"
+              />
+            </div>
+            
+            {/* Texte au centre */}
+            <div className="flex-1 text-center px-4">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+                FORMULAIRE D'INSCRIPTION
+              </h1>
+              <p className="text-orange-100 mt-1 text-sm sm:text-base">
+                Rejoignez l'annuaire OnMangeQuoi et augmentez votre visibilité
+              </p>
+            </div>
+            
+            <div className="flex-shrink-0 w-24 h-12 sm:w-32 sm:h-16"></div>
           </div>
-          <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-center text-gray-800 px-4">
-          FORMULAIRE D'INSCRIPTION
-          </h1>
-          <p className="text-center text-gray-600 mt-2 text-sm sm:text-base px-4">
-            Rejoignez l'annuaire OnMangeQuoi et augmentez votre visibilité
-          </p>
         </div>
       </div>
 
@@ -296,10 +296,11 @@ export default function OMQPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Téléphone du restaurant
+                  Numéro du contact *
                 </label>
                 <input
                   type="tel"
+                  required
                   value={formData.phone}
                   onChange={(e) => handleInputChange('phone', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -335,7 +336,7 @@ export default function OMQPage() {
             {/* Adresse */}
             <div className="mt-4 sm:mt-6">
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Adresse postale *
+                Adresse postale du restaurant *
               </label>
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 <input
@@ -558,7 +559,7 @@ export default function OMQPage() {
             <div className="space-y-4 sm:space-y-6">
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Logo *
+                  Logo
                 </label>
                 <input
                   type="file"
@@ -674,6 +675,56 @@ export default function OMQPage() {
           </div>
         </form>
       </div>
+
+      {/* Modal de confirmation */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="bg-white rounded-lg shadow-2xl max-w-md w-full mx-4 transform transition-all border-2 border-orange-300">
+            <div className="p-6">
+              {/* Icône */}
+              <div className="flex justify-center mb-4">
+                {isSuccess ? (
+                  <div className="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-orange-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7"></path>
+                    </svg>
+                  </div>
+                ) : (
+                  <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+                    <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                  </div>
+                )}
+              </div>
+
+              {/* Titre */}
+              <h3 className={`text-lg font-semibold text-center mb-2 ${isSuccess ? 'text-orange-800' : 'text-red-800'}`}>
+                {isSuccess ? 'Succès !' : 'Erreur'}
+              </h3>
+
+              {/* Message */}
+              <p className="text-gray-700 text-center mb-6">
+                {modalMessage}
+              </p>
+
+              {/* Bouton de fermeture */}
+              <div className="flex justify-center">
+                <button
+                  onClick={() => setShowModal(false)}
+                  className={`px-6 py-2 rounded-lg font-medium transition-colors ${
+                    isSuccess 
+                      ? 'bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white' 
+                      : 'bg-red-600 hover:bg-red-700 text-white'
+                  }`}
+                >
+                  {isSuccess ? 'Parfait !' : 'Fermer'}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
