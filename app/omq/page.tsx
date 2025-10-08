@@ -243,7 +243,7 @@ export default function OMQPage() {
 
   return (
     <div className="min-h-screen" style={{ 
-      backgroundImage: 'url(/OMQ-Pattern.png)', 
+      // backgroundImage: 'url(/OMQ-Pattern.png)', 
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
