@@ -242,7 +242,16 @@ export default function OMQPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/OMQ-Pattern.png)', backgroundSize: '150%', fontFamily: 'var(--font-nunito), sans-serif' }}>
+    <div className="min-h-screen" style={{ 
+      backgroundImage: 'url(/OMQ-Pattern.png)', 
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundAttachment: 'fixed',
+      fontFamily: 'var(--font-nunito), sans-serif',
+      minHeight: '100vh',
+      width: '100%'
+    }}>
       <style jsx global>{`
         input::placeholder, textarea::placeholder {
           font-family: var(--font-nunito), sans-serif;
