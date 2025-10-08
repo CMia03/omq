@@ -242,7 +242,7 @@ export default function OMQPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/OMQ-Pattern.png)' }}>
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/OMQ-Pattern.png)', backgroundSize: '150%' }}>
       <div className="bg-orange-500 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex items-center justify-between">
