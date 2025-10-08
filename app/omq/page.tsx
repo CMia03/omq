@@ -242,7 +242,15 @@ export default function OMQPage() {
   ];
 
   return (
-    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/OMQ-Pattern.png)', backgroundSize: '150%' }}>
+    <div className="min-h-screen bg-cover bg-center bg-no-repeat" style={{ backgroundImage: 'url(/OMQ-Pattern.png)', backgroundSize: '150%', fontFamily: 'var(--font-nunito), sans-serif' }}>
+      <style jsx global>{`
+        input::placeholder, textarea::placeholder {
+          font-family: var(--font-nunito), sans-serif;
+        }
+        input, textarea, select, button {
+          font-family: var(--font-nunito), sans-serif;
+        }
+      `}</style>
       <div className="bg-orange-500 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex items-center justify-between">
@@ -258,10 +266,10 @@ export default function OMQPage() {
             
             {/* Texte au centre */}
             <div className="flex-1 text-center px-4">
-              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white">
+              <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
                 FORMULAIRE D'INSCRIPTION
               </h1>
-              <p className="text-orange-100 mt-1 text-sm sm:text-base">
+              <p className="text-orange-100 mt-1 text-sm sm:text-base" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
                 Rejoignez l'annuaire OnMangeQuoi et augmentez votre visibilité
               </p>
             </div>
@@ -272,17 +280,17 @@ export default function OMQPage() {
       </div>
 
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
-        <form key={formKey} onSubmit={handleSubmit} className="space-y-6 sm:space-y-8">
+        <form key={formKey} onSubmit={handleSubmit} className="space-y-6 sm:space-y-8" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
           {/* Informations générales */}
           <div className="bg-white rounded-lg shadow-md p-4 sm:p-6">
-            <h2 className="text-xl sm:text-2xl font-semibold text-orange-600 mb-4 sm:mb-6 border-b-2 border-orange-200 pb-2 flex justify-between items-center">
+            <h2 className="text-xl sm:text-2xl font-semibold text-orange-600 mb-4 sm:mb-6 border-b-2 border-orange-200 pb-2 flex justify-between items-center" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
               <span>Informations générales</span>
               <span className="text-sm font-normal text-orange-600">* obligatoire</span>
             </h2>
             
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label className="block text-sm font-medium text-gray-700 mb-2" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
                   Nom de votre restaurant *
                 </label>
                 <input
@@ -291,6 +299,7 @@ export default function OMQPage() {
                   value={formData.restaurantName}
                   onChange={(e) => handleInputChange('restaurantName', e.target.value)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
+                  style={{ fontFamily: 'var(--font-nunito), sans-serif' }}
                 />
               </div>
 
