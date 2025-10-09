@@ -261,7 +261,6 @@ export default function OMQPage() {
         }
         body {
           background-color: white !important;
-          color: black !important;
         }
         input::placeholder, textarea::placeholder {
           font-family: var(--font-nunito), sans-serif;
@@ -275,16 +274,8 @@ export default function OMQPage() {
         input[type="checkbox"] {
           background-color: white !important;
         }
-        label, span, p, h1, h2, h3, div {
-          color: inherit !important;
-        }
-        .bg-orange-500 * {
-          color: white !important;
-        }
-        button:not(.bg-orange-500 button) {
-          font-family: var(--font-nunito), sans-serif;
+        .bg-white {
           background-color: white !important;
-          color: black !important;
         }
       `}</style>
       <div className="bg-orange-500 shadow-lg">
