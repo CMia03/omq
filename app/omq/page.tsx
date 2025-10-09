@@ -290,7 +290,6 @@ export default function OMQPage() {
               />
             </div>
             
-            {/* Texte au centre */}
             <div className="flex-1 text-center px-4">
               <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white" style={{ fontFamily: 'var(--font-nunito), sans-serif' }}>
                 FORMULAIRE D'INSCRIPTION
