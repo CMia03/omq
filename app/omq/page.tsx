@@ -243,7 +243,7 @@ export default function OMQPage() {
 
   return (
     <div className="min-h-screen" style={{ 
-      // backgroundImage: 'url(/OMQ-Pattern.png)', 
+      backgroundImage: 'url(/OMQ-Fond.png)', 
       backgroundSize: 'cover',
       backgroundPosition: 'center',
       backgroundRepeat: 'no-repeat',
@@ -251,7 +251,6 @@ export default function OMQPage() {
       fontFamily: 'var(--font-nunito), sans-serif',
       minHeight: '100vh',
       width: '100%',
-      backgroundColor: 'white',
       color: 'black',
       colorScheme: 'light'
     }}>
