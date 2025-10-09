@@ -250,14 +250,41 @@ export default function OMQPage() {
       backgroundAttachment: 'fixed',
       fontFamily: 'var(--font-nunito), sans-serif',
       minHeight: '100vh',
-      width: '100%'
+      width: '100%',
+      backgroundColor: 'white',
+      color: 'black',
+      colorScheme: 'light'
     }}>
       <style jsx global>{`
+        html {
+          color-scheme: light !important;
+        }
+        body {
+          background-color: white !important;
+          color: black !important;
+        }
         input::placeholder, textarea::placeholder {
           font-family: var(--font-nunito), sans-serif;
+          color: #9ca3af !important;
         }
-        input, textarea, select, button {
+        input, textarea, select {
           font-family: var(--font-nunito), sans-serif;
+          background-color: white !important;
+          color: black !important;
+        }
+        input[type="checkbox"] {
+          background-color: white !important;
+        }
+        label, span, p, h1, h2, h3, div {
+          color: inherit !important;
+        }
+        .bg-orange-500 * {
+          color: white !important;
+        }
+        button:not(.bg-orange-500 button) {
+          font-family: var(--font-nunito), sans-serif;
+          background-color: white !important;
+          color: black !important;
         }
       `}</style>
       <div className="bg-orange-500 shadow-lg">
