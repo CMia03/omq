@@ -147,10 +147,23 @@ export default function OMQPage() {
     files: FileList | null
   ) => {
     if (files) {
+      const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+      const filesArray = Array.from(files);
+      
+      // Vérifier si tous les fichiers sont du bon type
+      const invalidFiles = filesArray.filter(file => !validTypes.includes(file.type.toLowerCase()));
+      
+      if (invalidFiles.length > 0) {
+        setModalMessage('Type de fichier invalide. Veuillez uploader uniquement des fichiers JPEG, JPG, PNG ou WEBP.');
+        setIsSuccess(false);
+        setShowModal(true);
+        return;
+      }
+      
       if (field === 'photos') {
         setFormData(prev => ({
           ...prev,
-          photos: Array.from(files)
+          photos: filesArray
         }));
       } else {
         setFormData(prev => ({
@@ -655,9 +668,11 @@ export default function OMQPage() {
                 </label>
                 <input
                   type="file"
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/jpg,image/png,image/webp"
                   onChange={(e) => handleFileUpload('logo', e.target.files)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
+                <p className="text-xs text-gray-500 mt-1">Formats acceptés: JPEG, JPG, PNG, WEBP</p>
               </div>
 
               <div>
@@ -666,9 +681,11 @@ export default function OMQPage() {
                 </label>
                 <input
                   type="file"
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/jpg,image/png,image/webp"
                   onChange={(e) => handleFileUpload('banner', e.target.files)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
+                <p className="text-xs text-gray-500 mt-1">Formats acceptés: JPEG, JPG, PNG, WEBP</p>
               </div>
 
               <div>
@@ -678,11 +695,12 @@ export default function OMQPage() {
                 <input
                   type="file"
                   multiple
+                  accept=".jpg,.jpeg,.png,.webp,image/jpeg,image/jpg,image/png,image/webp"
                   onChange={(e) => handleFileUpload('photos', e.target.files)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  Vous pouvez sélectionner plusieurs fichiers
+                  Vous pouvez sélectionner plusieurs fichiers. Formats acceptés: JPEG, JPG, PNG, WEBP
                 </p>
               </div>
             </div>
