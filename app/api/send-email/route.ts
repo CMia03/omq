@@ -4,6 +4,15 @@ import Handlebars from 'handlebars';
 import fs from 'fs';
 import path from 'path';
 
+// Configuration pour augmenter la limite de taille du body
+export const config = {
+  api: {
+    bodyParser: {
+      sizeLimit: '50mb',
+    },
+  },
+};
+
 // Configuration du transporteur email (Gmail)
 const createTransporter = () => {
   return nodemailer.createTransport({

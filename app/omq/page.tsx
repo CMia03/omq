@@ -160,6 +160,25 @@ export default function OMQPage() {
         return;
       }
       
+      // Limiter le nombre de photos à 10 pour éviter les problèmes de taille
+      if (field === 'photos' && filesArray.length > 10) {
+        setModalMessage('Vous ne pouvez uploader que 10 photos maximum. Les images seront automatiquement compressées pour optimiser l\'envoi.');
+        setIsSuccess(false);
+        setShowModal(true);
+        return;
+      }
+      
+      // Vérifier la taille totale des fichiers (limite à 20MB par fichier)
+      const maxSize = 20 * 1024 * 1024; // 20MB
+      const oversizedFiles = filesArray.filter(file => file.size > maxSize);
+      
+      if (oversizedFiles.length > 0) {
+        setModalMessage(`Certains fichiers sont trop volumineux (max 20MB par fichier). Fichiers concernés: ${oversizedFiles.map(f => f.name).join(', ')}`);
+        setIsSuccess(false);
+        setShowModal(true);
+        return;
+      }
+      
       if (field === 'photos') {
         setFormData(prev => ({
           ...prev,
@@ -172,6 +191,59 @@ export default function OMQPage() {
         }));
       }
     }
+  };
+
+  const compressImage = (file: File, maxWidth: number = 1200, quality: number = 0.8): Promise<File> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = (e) => {
+        const img = document.createElement('img');
+        img.src = e.target?.result as string;
+        img.onload = () => {
+          const canvas = document.createElement('canvas');
+          let width = img.width;
+          let height = img.height;
+
+          // Calculer les nouvelles dimensions
+          if (width > maxWidth) {
+            height = (height * maxWidth) / width;
+            width = maxWidth;
+          }
+
+          canvas.width = width;
+          canvas.height = height;
+
+          const ctx = canvas.getContext('2d');
+          if (!ctx) {
+            reject(new Error('Could not get canvas context'));
+            return;
+          }
+
+          ctx.drawImage(img, 0, 0, width, height);
+
+          // Convertir en Blob
+          canvas.toBlob(
+            (blob) => {
+              if (!blob) {
+                reject(new Error('Could not compress image'));
+                return;
+              }
+              // Créer un nouveau File à partir du Blob
+              const compressedFile = new File([blob], file.name, {
+                type: 'image/jpeg',
+                lastModified: Date.now(),
+              });
+              resolve(compressedFile);
+            },
+            'image/jpeg',
+            quality
+          );
+        };
+        img.onerror = () => reject(new Error('Could not load image'));
+      };
+      reader.onerror = () => reject(new Error('Could not read file'));
+    });
   };
 
   const fileToBase64 = (file: File): Promise<string> => {
@@ -194,22 +266,35 @@ export default function OMQPage() {
     const processedData: ProcessedFormData = { ...formData };
     
     try {
+      
+      // Compresser et convertir le logo
       if (formData.logo) {
-        processedData.logoBase64 = await fileToBase64(formData.logo);
+        const compressedLogo = await compressImage(formData.logo, 800, 0.85);
+        processedData.logoBase64 = await fileToBase64(compressedLogo);
         processedData.logoName = formData.logo.name;
       }
       
+      // Compresser et convertir la bannière
       if (formData.banner) {
-        processedData.bannerBase64 = await fileToBase64(formData.banner);
+        const compressedBanner = await compressImage(formData.banner, 1200, 0.85);
+        processedData.bannerBase64 = await fileToBase64(compressedBanner);
         processedData.bannerName = formData.banner.name;
       }
       
+      // Compresser et convertir les photos
       if (formData.photos.length > 0) {
+        const compressedPhotos = await Promise.all(
+          formData.photos.map(photo => compressImage(photo, 1200, 0.8))
+        );
+        
         processedData.photosBase64 = await Promise.all(
-          formData.photos.map(async (photo) => ({
-            name: photo.name,
+          compressedPhotos.map(async (photo, index) => {
+            const originalSize = formData.photos[index].size;
+            return {
+              name: formData.photos[index].name,
             base64: await fileToBase64(photo)
-          }))
+            };
+          })
         );
       }
       
@@ -677,7 +762,9 @@ export default function OMQPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  Vous pouvez sélectionner plusieurs fichiers. Formats acceptés: JPEG, JPG, PNG, WEBP
+                  Maximum 10 photos (20MB par fichier). Formats: JPEG, JPG, PNG, WEBP.
+                  <br />
+        
                 </p>
               </div>
             </div>
@@ -752,9 +839,19 @@ export default function OMQPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 sm:px-8 rounded-lg shadow-lg hover:from-orange-600 hover:to-red-600 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-orange-300 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full sm:w-auto bg-gradient-to-r from-orange-500 to-red-500 text-white font-semibold py-3 px-6 sm:px-8 rounded-lg shadow-lg hover:from-orange-600 hover:to-red-600 transform hover:scale-105 transition-all duration-200 focus:outline-none focus:ring-4 focus:ring-orange-300 text-sm sm:text-base disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
             >
-              Soumettre le formulaire
+              {isSubmitting ? (
+                <>
+                  <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  Envoi en cours...
+                </>
+              ) : (
+                'Soumettre le formulaire'
+              )}
             </button>
           </div>
         </form>
