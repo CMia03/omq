@@ -270,29 +270,6 @@ export default function OMQPage() {
       color: 'black',
       colorScheme: 'light'
     }}>
-      <style jsx global>{`
-        html {
-          color-scheme: light !important;
-        }
-        body {
-          background-color: white !important;
-        }
-        input::placeholder, textarea::placeholder {
-          font-family: var(--font-nunito), sans-serif;
-          color: #9ca3af !important;
-        }
-        input, textarea, select {
-          font-family: var(--font-nunito), sans-serif;
-          background-color: white !important;
-          color: black !important;
-        }
-        input[type="checkbox"] {
-          background-color: white !important;
-        }
-        .bg-white {
-          background-color: white !important;
-        }
-      `}</style>
       <div className="bg-orange-500 shadow-lg">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-8">
           <div className="flex items-center justify-between">

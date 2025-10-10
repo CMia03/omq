@@ -24,3 +24,30 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+html {
+  color-scheme: light !important;
+}
+
+body {
+  background-color: white !important;
+}
+
+input::placeholder, textarea::placeholder {
+  font-family: var(--font-nunito), sans-serif;
+  color: #9ca3af !important;
+}
+
+input, textarea, select {
+  font-family: var(--font-nunito), sans-serif;
+  background-color: white !important;
+  color: black !important;
+}
+
+input[type="checkbox"] {
+  background-color: white !important;
+}
+
+.bg-white {
+  background-color: white !important;
+}
