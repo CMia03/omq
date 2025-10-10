@@ -366,12 +366,15 @@
                     <tbody>
                         {{#each openingHours}}
                         <tr>
-                            <td>{{@key}}</td>
+                            <td>{{translateDay @key}}</td>
                             <td>
                                 {{#if closed}}
                                 <span class="closed">Fermé</span>
                                 {{else}}
                                 {{open}} - {{close}}
+                                {{#if hasAfternoonBreak}}
+                                 et {{afternoonOpen}} - {{afternoonClose}}
+                                {{/if}}
                                 {{/if}}
                             </td>
                         </tr>

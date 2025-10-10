@@ -15,6 +15,20 @@ const createTransporter = () => {
   });
 };
 
+// Helper pour traduire les jours en français
+Handlebars.registerHelper('translateDay', function(day: string) {
+  const translations: { [key: string]: string } = {
+    'monday': 'Lundi',
+    'tuesday': 'Mardi',
+    'wednesday': 'Mercredi',
+    'thursday': 'Jeudi',
+    'friday': 'Vendredi',
+    'saturday': 'Samedi',
+    'sunday': 'Dimanche'
+  };
+  return translations[day.toLowerCase()] || day;
+});
+
 // Fonction pour charger et compiler le template
 const compileTemplate = async (data: any) => {
   try {
