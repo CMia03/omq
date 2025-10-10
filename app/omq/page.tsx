@@ -762,7 +762,7 @@ export default function OMQPage() {
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  Maximum 10 photos (20MB par fichier). Formats: JPEG, JPG, PNG, WEBP.
+                  Maximum 4 photos (20MB par fichier). Formats: JPEG, JPG, PNG, WEBP.
                   <br />
         
                 </p>
