@@ -7,6 +7,9 @@ interface OpeningHours {
   open: string;
   close: string;
   closed: boolean;
+  hasAfternoonBreak?: boolean;
+  afternoonOpen?: string;
+  afternoonClose?: string;
 }
 
 interface Address {
@@ -85,13 +88,13 @@ const initialFormData: FormData = {
   },
   category: '',
   openingHours: {
-    monday: { open: '', close: '', closed: false },
-    tuesday: { open: '', close: '', closed: false },
-    wednesday: { open: '', close: '', closed: false },
-    thursday: { open: '', close: '', closed: false },
-    friday: { open: '', close: '', closed: false },
-    saturday: { open: '', close: '', closed: false },
-    sunday: { open: '', close: '', closed: false }
+    monday: { open: '', close: '', closed: false, hasAfternoonBreak: false, afternoonOpen: '', afternoonClose: '' },
+    tuesday: { open: '', close: '', closed: false, hasAfternoonBreak: false, afternoonOpen: '', afternoonClose: '' },
+    wednesday: { open: '', close: '', closed: false, hasAfternoonBreak: false, afternoonOpen: '', afternoonClose: '' },
+    thursday: { open: '', close: '', closed: false, hasAfternoonBreak: false, afternoonOpen: '', afternoonClose: '' },
+    friday: { open: '', close: '', closed: false, hasAfternoonBreak: false, afternoonOpen: '', afternoonClose: '' },
+    saturday: { open: '', close: '', closed: false, hasAfternoonBreak: false, afternoonOpen: '', afternoonClose: '' },
+    sunday: { open: '', close: '', closed: false, hasAfternoonBreak: false, afternoonOpen: '', afternoonClose: '' }
   },
   serviceOptions: {
     onSite: false,
@@ -509,7 +512,10 @@ export default function OMQPage() {
                             ...newHours[dayKey],
                             closed: e.target.checked,
                             open: e.target.checked ? '' : newHours[dayKey].open,
-                            close: e.target.checked ? '' : newHours[dayKey].close
+                            close: e.target.checked ? '' : newHours[dayKey].close,
+                            hasAfternoonBreak: e.target.checked ? false : newHours[dayKey].hasAfternoonBreak,
+                            afternoonOpen: e.target.checked ? '' : (newHours[dayKey].afternoonOpen || ''),
+                            afternoonClose: e.target.checked ? '' : (newHours[dayKey].afternoonClose || '')
                           };
                           setFormData(prev => ({ ...prev, openingHours: newHours }));
                         }}
@@ -548,6 +554,58 @@ export default function OMQPage() {
                           }}
                           className="px-2 sm:px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
                         />
+                        <label className="flex items-center space-x-2 ml-4">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(formData.openingHours[day.key as keyof typeof formData.openingHours].hasAfternoonBreak)}
+                            onChange={(e) => {
+                              const newHours = { ...formData.openingHours };
+                              const dayKey = day.key as keyof OpeningHoursByDay;
+                              newHours[dayKey] = {
+                                ...newHours[dayKey],
+                                hasAfternoonBreak: e.target.checked,
+                                afternoonOpen: e.target.checked ? newHours[dayKey].afternoonOpen || '' : '',
+                                afternoonClose: e.target.checked ? newHours[dayKey].afternoonClose || '' : ''
+                              };
+                              setFormData(prev => ({ ...prev, openingHours: newHours }));
+                            }}
+                            className="rounded border-gray-300 text-orange-600 focus:ring-orange-500"
+                          />
+                          <span className="text-sm text-gray-600">Coupure l'après-midi</span>
+                        </label>
+                        {formData.openingHours[day.key as keyof typeof formData.openingHours].hasAfternoonBreak && (
+                          <div className="flex items-center space-x-2 flex-wrap ml-4">
+                            <input
+                              type="time"
+                              value={formData.openingHours[day.key as keyof typeof formData.openingHours].afternoonOpen || ''}
+                              onChange={(e) => {
+                                const newHours = { ...formData.openingHours };
+                                const dayKey = day.key as keyof OpeningHoursByDay;
+                                newHours[dayKey] = {
+                                  ...newHours[dayKey],
+                                  afternoonOpen: e.target.value
+                                };
+                                setFormData(prev => ({ ...prev, openingHours: newHours }));
+                              }}
+                              className="px-2 sm:px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+                            />
+                            <span className="text-gray-600 text-sm">à</span>
+                            <input
+                              type="time"
+                              value={formData.openingHours[day.key as keyof typeof formData.openingHours].afternoonClose || ''}
+                              onChange={(e) => {
+                                const newHours = { ...formData.openingHours };
+                                const dayKey = day.key as keyof OpeningHoursByDay;
+                                newHours[dayKey] = {
+                                  ...newHours[dayKey],
+                                  afternoonClose: e.target.value
+                                };
+                                setFormData(prev => ({ ...prev, openingHours: newHours }));
+                              }}
+                              className="px-2 sm:px-3 py-1 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 text-sm"
+                            />
+                          </div>
+                        )}
                       </div>
                     )}
                   </div>
@@ -597,7 +655,6 @@ export default function OMQPage() {
                 </label>
                 <input
                   type="file"
-                  accept="image/*"
                   onChange={(e) => handleFileUpload('logo', e.target.files)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
@@ -609,7 +666,6 @@ export default function OMQPage() {
                 </label>
                 <input
                   type="file"
-                  accept="image/*"
                   onChange={(e) => handleFileUpload('banner', e.target.files)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
@@ -621,13 +677,12 @@ export default function OMQPage() {
                 </label>
                 <input
                   type="file"
-                  accept="image/*"
                   multiple
                   onChange={(e) => handleFileUpload('photos', e.target.files)}
                   className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-transparent"
                 />
                 <p className="text-sm text-gray-500 mt-1">
-                  Vous pouvez sélectionner plusieurs photos
+                  Vous pouvez sélectionner plusieurs fichiers
                 </p>
               </div>
             </div>

@@ -412,22 +412,36 @@
                         <div class="file-icon">📄</div>
                         <span>Logo : {{logoName}}</span>
                     </div>
+                    {{#unless logoIsPdf}}
                     {{#if logoBase64}}
                     <div style="margin-top: 10px; text-align: center;">
                         <img src="cid:logo@omq" alt="Logo du restaurant" style="max-width: 200px; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                     </div>
                     {{/if}}
+                    {{else}}
+                    <div class="info-item" style="margin-top: 6px;">
+                        <div class="info-label">Pièce jointe</div>
+                        <div class="info-value">PDF</div>
+                    </div>
+                    {{/unless}}
                     {{/if}}
                     {{#if bannerName}}
                     <div class="file-item">
                         <div class="file-icon">🖼️</div>
                         <span>Bannière : {{bannerName}}</span>
                     </div>
+                    {{#unless bannerIsPdf}}
                     {{#if bannerBase64}}
                     <div style="margin-top: 10px; text-align: center;">
-                        <img src="cid:banner@omq" alt="Bannière du restaurant" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
+                        <img src="cid:banner@omq" alt="Bannière" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                     </div>
                     {{/if}}
+                    {{else}}
+                    <div class="info-item" style="margin-top: 6px;">
+                        <div class="info-label">Pièce jointe</div>
+                        <div class="info-value">PDF</div>
+                    </div>
+                    {{/unless}}
                     {{/if}}
                     {{#if photosBase64}}
                     {{#each photosBase64}}
@@ -438,9 +452,11 @@
                     {{/each}}
                     <div style="margin-top: 15px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px;">
                         {{#each photosBase64}}
+                        {{#unless isPdf}}
                         <div style="text-align: center;">
                             <img src="cid:photo-{{@index}}@omq" alt="Photo {{@index}}" style="max-width: 100%; height: auto; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
                         </div>
+                        {{/unless}}
                         {{/each}}
                     </div>
                     {{/if}}
